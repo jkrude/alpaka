@@ -131,6 +131,7 @@
 //-----------------------------------------------------------------------------
 // math
 #include <alpaka/math/MathCudaBuiltIn.hpp>
+#include <alpaka/math/MathCudaHipBuiltIn.hpp>
 #include <alpaka/math/MathHipBuiltIn.hpp>
 #include <alpaka/math/MathStdLib.hpp>
 //-----------------------------------------------------------------------------

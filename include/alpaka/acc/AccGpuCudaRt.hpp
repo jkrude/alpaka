@@ -23,7 +23,7 @@
 #include <alpaka/idx/bt/IdxBtCudaBuiltIn.hpp>
 #include <alpaka/atomic/AtomicCudaBuiltIn.hpp>
 #include <alpaka/atomic/AtomicHierarchy.hpp>
-#include <alpaka/math/MathCudaBuiltIn.hpp>
+#include <alpaka/math/MathCudaHipBuiltIn.hpp>
 #include <alpaka/block/shared/dyn/BlockSharedMemDynCudaBuiltIn.hpp>
 #include <alpaka/block/shared/st/BlockSharedMemStCudaBuiltIn.hpp>
 #include <alpaka/block/sync/BlockSyncCudaBuiltIn.hpp>
@@ -73,7 +73,7 @@ namespace alpaka
                 atomic::AtomicCudaBuiltIn, // block atomics
                 atomic::AtomicCudaBuiltIn  // thread atomics
             >,
-            public math::MathCudaBuiltIn,
+            public math::MathCudaHipBuiltIn,
             public block::shared::dyn::BlockSharedMemDynCudaBuiltIn,
             public block::shared::st::BlockSharedMemStCudaBuiltIn,
             public block::sync::BlockSyncCudaBuiltIn,
@@ -92,7 +92,7 @@ namespace alpaka
                         atomic::AtomicCudaBuiltIn, // atomics between blocks
                         atomic::AtomicCudaBuiltIn  // atomics between threads
                     >(),
-                    math::MathCudaBuiltIn(),
+                    math::MathCudaHipBuiltIn(),
                     block::shared::dyn::BlockSharedMemDynCudaBuiltIn(),
                     block::shared::st::BlockSharedMemStCudaBuiltIn(),
                     block::sync::BlockSyncCudaBuiltIn(),
