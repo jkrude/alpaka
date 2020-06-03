@@ -125,17 +125,8 @@ struct TestContainer
     >;
     using DevAcc = alpaka::dev::Dev< Acc >;
     using PltfAcc = alpaka::pltf::Pltf< DevAcc >;
-    using Host = alpaka::acc::AccCpuSerial<
-        Dim,
-        Idx
-    >;
 
-    using HostQueueProperty = alpaka::queue::Blocking;
-    using HostQueue = alpaka::queue::Queue<
-        Host,
-        HostQueueProperty
-    >;
-    using DevHost = alpaka::dev::Dev< Host >;
+    using DevHost = alpaka::dev::DevCpu;
     using PltfHost = alpaka::pltf::Pltf< DevHost >;
 
     using BufHost = alpaka::mem::buf::Buf<
@@ -161,15 +152,13 @@ struct TestContainer
     DevAcc const devAcc;
     DevHost const devHost;
     DevQueue devQueue;
-    HostQueue hostQueue;
 
 
     // Constructor
     TestContainer( ) :
         devAcc( alpaka::pltf::getDevByIdx< PltfAcc >( 0u ) ),
         devHost( alpaka::pltf::getDevByIdx< PltfHost >( 0u ) ),
-        devQueue( devAcc ),
-        hostQueue( devHost )
+        devQueue( devAcc )
     {
     }
 
@@ -310,7 +299,7 @@ struct DimHelper<
     >;
 
 
-    static auto getExtents(
+    static auto getVec(
         Idx const & elDimOne,
         Idx const & elDimTwo,
         Idx const & elDimThree
@@ -320,32 +309,6 @@ struct DimHelper<
         alpaka::ignore_unused( elDimThree );
         return Vec( elDimOne );
     }
-
-
-    static auto getExtentsSubView(
-        Idx const & elDimOne,
-        Idx const & elDimTwo,
-        Idx const & elDimThree
-    ) -> Vec
-    {
-        alpaka::ignore_unused( elDimTwo );
-        alpaka::ignore_unused( elDimThree );
-        return Vec( elDimOne );
-    }
-
-
-    static auto getOffsets(
-        Idx const & elDimOne,
-        Idx const & elDimTwo,
-        Idx const & elDimThree
-    ) -> Vec
-    {
-        alpaka::ignore_unused( elDimTwo );
-        alpaka::ignore_unused( elDimThree );
-        return Vec( elDimOne );
-    }
-
-
     template< typename Data >
     static auto cmpCorrectlySlicedBuffer(
         Vec extents,
@@ -379,8 +342,7 @@ struct DimHelper<
         Idx
     >;
 
-
-    static auto getExtents(
+    static auto getVec(
         Idx const & elDimOne,
         Idx const & elDimTwo,
         Idx const & elDimThree
@@ -392,35 +354,6 @@ struct DimHelper<
             elDimTwo
         );
     }
-
-
-    static auto getExtentsSubView(
-        Idx const & elDimOne,
-        Idx const & elDimTwo,
-        Idx const & elDimThree
-    ) -> Vec
-    {
-        alpaka::ignore_unused( elDimThree );
-        return Vec(
-            elDimOne,
-            elDimTwo
-        );
-    }
-
-
-    static auto getOffsets(
-        Idx const & elDimOne,
-        Idx const & elDimTwo,
-        Idx const & elDimThree
-    ) -> Vec
-    {
-        alpaka::ignore_unused( elDimThree );
-        return Vec(
-            elDimOne,
-            elDimTwo
-        );
-    }
-
 
     template< typename Data >
     static auto cmpCorrectlySlicedBuffer(
@@ -455,8 +388,7 @@ struct DimHelper<
         Idx
     >;
 
-
-    static auto getExtents(
+    static auto getVec(
         Idx const & elDimOne,
         Idx const & elDimTwo,
         Idx const & elDimThree
@@ -468,35 +400,6 @@ struct DimHelper<
             elDimThree
         );
     }
-
-
-    static auto getExtentsSubView(
-        Idx const & elDimOne,
-        Idx const & elDimTwo,
-        Idx const & elDimThree
-    ) -> Vec
-    {
-        return Vec(
-            elDimOne,
-            elDimTwo,
-            elDimThree
-        );
-    }
-
-
-    static auto getOffsets(
-        Idx const & elDimOne,
-        Idx const & elDimTwo,
-        Idx const & elDimThree
-    ) -> Vec
-    {
-        return Vec(
-            elDimOne,
-            elDimTwo,
-            elDimThree
-        );
-    }
-
 
     template< typename Data >
     static auto cmpCorrectlySlicedBuffer(
@@ -559,17 +462,21 @@ struct TestSlicing
         TestContainer slicingTest;
 
         // Setup extents, extentsSubView and offsets.
-        Vec extents = DimHelper< Dim, Idx >::getExtents(
-            extentsDimOne,
-            extentsDimTwo,
-            extentsDimThree
-        );
-        Vec extentsSubView = DimHelper< Dim, Idx >::getExtentsSubView(
+        Vec extents =
+            DimHelper<
+                Dim,
+                Idx
+            >::getVec(
+                extentsDimOne,
+                extentsDimTwo,
+                extentsDimThree
+            );
+        Vec extentsSubView = DimHelper< Dim, Idx >::getVec(
             extentsSubViewDimOne,
             extentsSubViewDimTwo,
             extentsSubViewDimThree
         );
-        Vec offsets = DimHelper< Dim, Idx >::getOffsets(
+        Vec offsets = DimHelper< Dim, Idx >::getVec(
             offsetDimOne,
             offsetDimTwo,
             offsetDimThree
@@ -620,7 +527,7 @@ struct TestSlicing
     }
 };
 
-TEST_CASE( "memBuSlicingTest",
+TEST_CASE( "memBufSlicingTest",
     "[memBuf]" )
 {
     /*
